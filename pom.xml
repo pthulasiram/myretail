@@ -9,10 +9,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>product-api</module>
+	<module>discovery-server</module>
         <module>productservice</module>
 	<module>productpriceservice</module>
-	<module>discovery-server</module>
+	<module>product-api</module>
     </modules>
 
 </project>
