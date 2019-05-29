@@ -32,10 +32,16 @@ heroku deploy:jar ./target/product-api-server-0.0.1-SNAPSHOT.jar --app product-a
 heroku create product-price-service --no-remote
 heroku deploy:jar ./target/productpriceservice-0.0.1-SNAPSHOT.jar --app product-price-service
 ````
-### Check product service 
+### Verify product api service
+
+https://product-api-service.herokuapp.com/swagger-ui.html
+
+### verify product service 
+
 https://product-service-cf.herokuapp.com/swagger-ui.html
 
-### check product price service details below
+### Verify product price service details below
+
 ```
 curl -x GET "https://product-price-service.herokuapp.com/product/10001" -H "accept: */*"
 ```
