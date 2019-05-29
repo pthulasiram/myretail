@@ -1,7 +1,9 @@
 package com.myretail.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,13 +21,30 @@ import com.myretail.model.ProductPrice;
 @Service
 public class ProductService {
 	private final RestTemplate restTemplate;
-	@Value("${product-service.url}")
+	//@Value("${product-service.url}")
 	private String productServiceUrl;
-	@Value("${product-price-service.url}")
+	//@Value("${product-price-service.url}")
 	private String productPriceServiceUrl;
+
+	@Autowired
+	private DiscoveryClient discoveryClient;
 
 	public ProductService(RestTemplateBuilder restTemplateBuilder) {
 		this.restTemplate = restTemplateBuilder.build();
+	}
+
+	// Dynamically identify product service name from eureka server
+	private void getProuctServiceUri() {
+		discoveryClient.getInstances("product-service").forEach(s -> {
+			this.productServiceUrl = s.getUri().toString();
+		});
+	}
+
+	// Dynamically identify product service name from eureka server
+	private void getProductPriceServiceUri() {
+		discoveryClient.getInstances("product-price-service").forEach(s -> {
+			this.productPriceServiceUrl = s.getUri().toString();
+		});
 	}
 
 	/**
@@ -35,8 +54,9 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductDetail getProductDetailsById(Long id) {
-
-		String url = productServiceUrl + "product/" + id;
+		getProuctServiceUri();
+		//getProductPriceServiceUri();
+		String url = productServiceUrl + "api/product/" + id;
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 		ResponseEntity<ProductDetail> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null,
@@ -53,6 +73,8 @@ public class ProductService {
 	}
 
 	public ProductPrice getProductPriceById(Long id) {
+		//getProuctServiceUri();
+		getProductPriceServiceUri();
 		String url = productPriceServiceUrl + "product/" + id;
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -76,6 +98,7 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductPrice updateProductPrice(ProductPrice p) {
+		getProductPriceServiceUri();
 		String url = productPriceServiceUrl + "product/";
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -100,6 +123,7 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductPrice addProductPrice(ProductPrice p) {
+		getProductPriceServiceUri();
 		String url = productPriceServiceUrl + "product/";
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -123,6 +147,7 @@ public class ProductService {
 	 * @return
 	 */
 	public String deleteProductPriceById(Long id) {
+		getProductPriceServiceUri();
 		String url = productPriceServiceUrl + "product/" + id;
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -145,7 +170,8 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductDetail updateProductDetail(ProductDetail p) {
-		String url = productServiceUrl + "product/";
+		getProuctServiceUri();
+		String url = productServiceUrl + "api/product/";
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 		HttpEntity<ProductDetail> requestEntity = new HttpEntity<ProductDetail>(p, requestHeaders);
@@ -169,7 +195,8 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductDetail addProductDetail(ProductDetail p) {
-		String url = productServiceUrl + "product/";
+		getProuctServiceUri();
+		String url = productServiceUrl + "api/product/";
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 		HttpEntity<ProductDetail> requestEntity = new HttpEntity<ProductDetail>(p, requestHeaders);
@@ -184,6 +211,7 @@ public class ProductService {
 		}
 		return responseEntity.getBody();
 	}
+
 	/**
 	 * delete product by id in product price service
 	 * 
@@ -191,7 +219,8 @@ public class ProductService {
 	 * @return
 	 */
 	public String deleteProductDetailById(Long id) {
-		String url = productServiceUrl + "product/" + id;
+		getProuctServiceUri();
+		String url = productServiceUrl + "api/product/" + id;
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
@@ -227,8 +256,10 @@ public class ProductService {
 		}
 		return p;
 	}
+
 	/**
 	 * this method deletes product in product service and product price service
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -237,39 +268,39 @@ public class ProductService {
 		String productPriceRes = deleteProductPriceById(id);
 		return productPriceRes;
 	}
-	
+
 	public Product createProduct(Product product) {
 		ProductDetail pd = new ProductDetail();
 		ProductPrice pp = new ProductPrice();
-		if(product != null) {
+		if (product != null) {
 			pd.setId(product.getId());
 			pd.setName(product.getName());
-			
+
 			// invoking product servie api to store new record
 			pd = addProductDetail(pd);
 			pp.setId(pd.getId());
 			pp.setCurrencyCode(product.getCurrent_price().getCurrency_code());
 			pp.setPrice(product.getCurrent_price().getValue());
-			
+
 			pp = addProductPrice(pp);
 			product.setId(pp.getId());
 		}
 		return product;
 	}
-	
+
 	public Product updateProduct(Product product) {
 		ProductDetail pd = new ProductDetail();
 		ProductPrice pp = new ProductPrice();
-		if(product != null) {
+		if (product != null) {
 			pd.setId(product.getId());
 			pd.setName(product.getName());
-			
+
 			// invoking product servie api to store new record
 			pd = updateProductDetail(pd);
 			pp.setId(pd.getId());
 			pp.setCurrencyCode(product.getCurrent_price().getCurrency_code());
 			pp.setPrice(product.getCurrent_price().getValue());
-			
+
 			pp = updateProductPrice(pp);
 			product.setId(pp.getId());
 		}
