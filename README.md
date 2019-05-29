@@ -19,7 +19,14 @@ heroku create product-api-service
 mvn heroku:deploy
 
 Repeate above instructions for all service
+Or we can use java plugin to deploy apps in to heroku
+````
+heroku create product-api-service --no-remote
+heroku deploy:jar ./target/product-api-server-0.0.1-SNAPSHOT.jar --app product-api-service
 
+heroku create product-price-service --no-remote
+heroku deploy:jar ./target/productpriceservice-0.0.1-SNAPSHOT.jar --app product-price-service
+````
 ### Fetch product details by product id
 ```
 curl -X GET "https://product-api-service.herokuapp.com/product/10001" -H "accept: */*"
