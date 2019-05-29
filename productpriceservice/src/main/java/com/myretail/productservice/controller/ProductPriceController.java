@@ -56,7 +56,7 @@ public class ProductPriceController {
 	public Product updateProduct(@RequestBody Product p) {
 		Product product = null;
 		if (p != null && productPriceService.isProductExistsById(p.getId())) {
-			product = productPriceService.updateProduct(product);
+			product = productPriceService.updateProduct(p);
 		}
 		return product;
 	}

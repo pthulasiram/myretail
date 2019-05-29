@@ -21,9 +21,9 @@ import com.myretail.model.ProductPrice;
 @Service
 public class ProductService {
 	private final RestTemplate restTemplate;
-	//@Value("${product-service.url}")
+	@Value("${product-service.url}")
 	private String productServiceUrl;
-	//@Value("${product-price-service.url}")
+	@Value("${product-price-service.url}")
 	private String productPriceServiceUrl;
 
 	@Autowired
@@ -54,8 +54,8 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductDetail getProductDetailsById(Long id) {
-		getProuctServiceUri();
-		//getProductPriceServiceUri();
+		// getProuctServiceUri();
+		// getProductPriceServiceUri();
 		String url = productServiceUrl + "api/product/" + id;
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -73,8 +73,8 @@ public class ProductService {
 	}
 
 	public ProductPrice getProductPriceById(Long id) {
-		//getProuctServiceUri();
-		getProductPriceServiceUri();
+		// getProuctServiceUri();
+		// getProductPriceServiceUri();
 		String url = productPriceServiceUrl + "product/" + id;
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -98,7 +98,7 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductPrice updateProductPrice(ProductPrice p) {
-		getProductPriceServiceUri();
+		// getProductPriceServiceUri();
 		String url = productPriceServiceUrl + "product/";
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -123,7 +123,7 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductPrice addProductPrice(ProductPrice p) {
-		getProductPriceServiceUri();
+		// getProductPriceServiceUri();
 		String url = productPriceServiceUrl + "product/";
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -147,7 +147,7 @@ public class ProductService {
 	 * @return
 	 */
 	public String deleteProductPriceById(Long id) {
-		getProductPriceServiceUri();
+		// getProductPriceServiceUri();
 		String url = productPriceServiceUrl + "product/" + id;
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -170,7 +170,7 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductDetail updateProductDetail(ProductDetail p) {
-		getProuctServiceUri();
+		// getProuctServiceUri();
 		String url = productServiceUrl + "api/product/";
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -195,7 +195,7 @@ public class ProductService {
 	 * @return
 	 */
 	public ProductDetail addProductDetail(ProductDetail p) {
-		getProuctServiceUri();
+		// getProuctServiceUri();
 		String url = productServiceUrl + "api/product/";
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -219,7 +219,7 @@ public class ProductService {
 	 * @return
 	 */
 	public String deleteProductDetailById(Long id) {
-		getProuctServiceUri();
+		// getProuctServiceUri();
 		String url = productServiceUrl + "api/product/" + id;
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -297,6 +297,7 @@ public class ProductService {
 
 			// invoking product servie api to store new record
 			pd = updateProductDetail(pd);
+
 			pp.setId(pd.getId());
 			pp.setCurrencyCode(product.getCurrent_price().getCurrency_code());
 			pp.setPrice(product.getCurrent_price().getValue());
