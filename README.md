@@ -13,6 +13,7 @@ Maven 3.x
 Heroku 
 
 ###Install & deploy
+
 git clone https://github.com/pthulasiram/myretail.git
 cd myretail
 mvn clean intall
