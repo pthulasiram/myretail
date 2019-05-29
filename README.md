@@ -4,20 +4,21 @@ My Retail is fastest growing retail store - Demo Application using spring cloud
 For more details about project and architecture
 
 https://docs.google.com/document/d/1K-DEzHt3EWmaMldAX7zHPdFOZjFQyO7SrzMO2sqBaxI
-
-Install and run in local:
-
-git clone 
-cd myretail
-mvn clean install
-
+### Pre requisites
+JDK 1.8
+Maven 3.x
+Heroku 
 ###Install & deploy
+git clone https://github.com/pthulasiram/myretail.git
+cd myretail
+mvn clean intall
+heroku login
+enter credentails as per scree instructions
 
-mvn clean install
+heroku create product-api-service
+mvn heroku:deploy
 
-
-
-
+Repeate above instructions for all service
 
 ### Fetch product details by product id
 ```
