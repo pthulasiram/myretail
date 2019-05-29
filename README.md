@@ -11,6 +11,7 @@ JDK 1.8
 Maven 3.x
 
 Heroku 
+
 ###Install & deploy
 git clone https://github.com/pthulasiram/myretail.git
 cd myretail
@@ -30,6 +31,13 @@ heroku deploy:jar ./target/product-api-server-0.0.1-SNAPSHOT.jar --app product-a
 heroku create product-price-service --no-remote
 heroku deploy:jar ./target/productpriceservice-0.0.1-SNAPSHOT.jar --app product-price-service
 ````
+### Check product service 
+https://product-service-cf.herokuapp.com/swagger-ui.html
+
+### check product price service details below
+```
+curl -x GET "https://product-price-service.herokuapp.com/product/10001" -H "accept: */*"
+```
 ### Fetch product details by product id
 ```
 curl -X GET "https://product-api-service.herokuapp.com/product/10001" -H "accept: */*"
